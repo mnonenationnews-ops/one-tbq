@@ -1,0 +1,1179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>One Nation News' TBQ</title>
+
+<!-- PWA: manifest + theme -->
+<link rel="manifest" href="./manifest.json"/>
+<meta name="theme-color" content="#0D0D0D"/>
+<meta name="background-color" content="#141414"/>
+<meta name="description" content="One Nation News' TBQ — The Black Quiz. Live pay-for-play Black History trivia contests with real prizes."/>
+
+<!-- PWA: icons -->
+<link rel="icon" type="image/png" sizes="32x32" href="./icons/favicon-32.png"/>
+<link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png"/>
+<link rel="icon" type="image/png" sizes="512x512" href="./icons/icon-512.png"/>
+<link rel="apple-touch-icon" href="./icons/apple-touch-icon.png"/>
+
+<!-- PWA: iOS "Add to Home Screen" behavior -->
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="ONN TBQ"/>
+
+<!-- PWA: Android/Chrome -->
+<meta name="mobile-web-app-capable" content="yes"/>
+
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --red:#B03A2E;--red-d:#7B241C;--red-l:#F1948A;
+  --gold:#C9A227;--gold-d:#9A7D0A;--gold-l:#F9E79F;
+  --blk:#0D0D0D;--off:#141414;--dark:#1E1E1E;--card:#252525;
+  --cream:#FDF6E3;--muted:rgba(253,246,227,.55);
+  --green:#1E8449;--green-l:#58D68D;
+  --purple:#6C3483;--purple-l:#D7BDE2;
+  --font-d:'Playfair Display',serif;
+  --font-b:'DM Sans',sans-serif;
+}
+body{background:var(--off);color:var(--cream);font-family:var(--font-b);min-height:100vh;overflow-x:hidden}
+
+/* NAV */
+nav{background:var(--blk);border-bottom:2px solid var(--gold);padding:0 1.5rem;display:flex;align-items:center;justify-content:space-between;height:64px;position:sticky;top:0;z-index:200}
+.brand{cursor:pointer;display:flex;flex-direction:column;align-items:flex-start;line-height:1}
+.brand-top{font-size:7px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);font-family:var(--font-b);font-weight:500}
+.brand-main{font-family:var(--font-d);font-weight:900;font-size:1.9rem;color:var(--gold);letter-spacing:2px;line-height:1}
+.brand-bottom{font-size:7px;text-transform:uppercase;letter-spacing:1.5px;color:var(--red-l);font-family:var(--font-b);font-weight:500}
+.nav-mid{display:flex;gap:.25rem}
+.nb{background:none;border:none;color:var(--muted);font-family:var(--font-b);font-size:.82rem;cursor:pointer;padding:.4rem .75rem;border-radius:4px;transition:.2s;white-space:nowrap;border-bottom:2px solid transparent}
+.nb:hover,.nb.on{color:var(--gold)}
+.nb.on{border-bottom-color:var(--gold)}
+.nav-r{display:flex;align-items:center;gap:.6rem}
+.wallet{background:rgba(201,162,39,.15);border:1px solid var(--gold);color:var(--gold);padding:.2rem .75rem;border-radius:20px;font-size:.78rem;font-weight:600}
+.avatar{width:32px;height:32px;border-radius:50%;background:var(--red);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.75rem;border:2px solid var(--gold);flex-shrink:0}
+
+.scr{display:none;min-height:calc(100vh - 64px)}
+.scr.on{display:block}
+.kente{height:5px;background:repeating-linear-gradient(90deg,var(--red) 0 18px,var(--gold) 18px 36px,#000 36px 54px,var(--gold) 54px 72px)}
+
+/* HERO */
+.hero{background:radial-gradient(ellipse at 60% 0%,#3B0A0A 0%,var(--blk) 65%);padding:3.5rem 2rem 2.5rem;text-align:center;position:relative;overflow:hidden}
+.hero::after{content:'';position:absolute;inset:0;background:repeating-linear-gradient(135deg,transparent,transparent 60px,rgba(201,162,39,.025) 60px,rgba(201,162,39,.025) 120px);pointer-events:none}
+.hero-tbq{font-family:var(--font-d);font-weight:900;font-size:clamp(3.5rem,12vw,7rem);color:var(--gold);letter-spacing:6px;line-height:1;text-shadow:0 0 40px rgba(201,162,39,.25)}
+.hero-tagline-top{font-size:8px;text-transform:uppercase;letter-spacing:3px;color:var(--muted);font-family:var(--font-b);font-weight:500;margin-bottom:.5rem}
+.hero-tagline-bottom{font-size:8px;text-transform:uppercase;letter-spacing:3px;color:var(--red-l);font-family:var(--font-b);font-weight:500;margin-top:.5rem}
+.hero h1{font-family:var(--font-d);font-size:clamp(1.6rem,4vw,2.6rem);line-height:1.2;color:var(--cream);margin-top:1.25rem}
+.hero h1 span{color:var(--red-l)}
+.hero p{color:var(--muted);font-size:1.02rem;margin:1rem auto;max-width:560px;line-height:1.7}
+.hero-btns{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin-top:1.8rem}
+.btn-g{background:var(--gold);color:var(--blk);border:none;padding:.8rem 2rem;font-family:var(--font-b);font-weight:600;font-size:.95rem;border-radius:4px;cursor:pointer;transition:.2s}
+.btn-g:hover{background:var(--gold-d);transform:translateY(-1px)}
+.btn-o{background:none;color:var(--gold);border:2px solid var(--gold);padding:.8rem 2rem;font-family:var(--font-b);font-weight:600;font-size:.95rem;border-radius:4px;cursor:pointer;transition:.2s}
+.btn-o:hover{background:rgba(201,162,39,.1)}
+.btn-r{background:var(--red);color:#fff;border:none;padding:.75rem 1.8rem;font-family:var(--font-b);font-weight:600;font-size:.9rem;border-radius:4px;cursor:pointer;transition:.2s}
+.btn-r:hover{background:var(--red-d)}
+
+.stats{background:var(--red-d);padding:.5rem 2rem;display:flex;justify-content:center;gap:3rem;flex-wrap:wrap}
+.stat .n{font-family:var(--font-d);font-size:1.8rem;color:var(--gold)}
+.stat .l{font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
+
+/* NEWS TICKER */
+.ticker-band{background:var(--red-d);border-top:1px solid rgba(201,162,39,.25);overflow:hidden;white-space:nowrap;padding:.4rem 0}
+.ticker-text{display:inline-block;padding-left:100%;color:var(--gold-l);font-size:.8rem;font-weight:600;letter-spacing:.3px;animation:ticker-scroll 45s linear infinite}
+@keyframes ticker-scroll{0%{transform:translateX(0)}100%{transform:translateX(-100%)}}
+
+/* RULES */
+.rules-band{background:var(--card);border-top:1px solid rgba(201,162,39,.2);border-bottom:1px solid rgba(201,162,39,.2);padding:1.5rem 2rem;max-width:900px;margin:.5rem auto 0}
+.rules-band h3{font-family:var(--font-d);color:var(--gold);margin-bottom:.75rem;font-size:1.1rem}
+.rules-band ul{list-style:none;display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:.4rem .75rem}
+.rules-band li{font-size:.83rem;color:var(--muted);padding-left:1rem;position:relative;line-height:1.5}
+.rules-band li::before{content:'\2022';position:absolute;left:0;color:var(--gold);font-size:.9rem;top:-.05rem}
+.rules-band li strong{color:var(--cream)}
+
+.schedule-band{background:rgba(201,162,39,.06);border:1px solid rgba(201,162,39,.2);border-radius:8px;padding:1.25rem 1.5rem;margin:1.5rem auto;max-width:900px;font-size:.85rem;color:var(--muted);line-height:1.7}
+.schedule-band strong{color:var(--gold)}
+
+/* TIERS */
+.tiers-sec{padding:2.5rem 1.5rem}
+.sec-h{font-family:var(--font-d);font-size:1.9rem;color:var(--gold);text-align:center;margin-bottom:.3rem}
+.sec-s{text-align:center;color:var(--muted);font-size:.88rem;margin-bottom:2rem;line-height:1.6;max-width:660px;margin-left:auto;margin-right:auto}
+.tiers-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.25rem;max-width:1080px;margin:0 auto}
+.tier-card{background:var(--card);border:1px solid rgba(201,162,39,.2);border-radius:8px;padding:1.6rem 1.3rem;position:relative;cursor:pointer;transition:.25s}
+.tier-card:hover{border-color:var(--gold);transform:translateY(-2px)}
+.tier-card.hot{border-color:var(--gold);border-width:2px}
+.tier-card.family{border-color:var(--purple);border-width:2px}
+.hot-tag{position:absolute;top:-11px;left:50%;transform:translateX(-50%);background:var(--gold);color:var(--blk);font-size:.65rem;font-weight:700;padding:.2rem .8rem;border-radius:20px;white-space:nowrap;text-transform:uppercase}
+.family-tag{position:absolute;top:-11px;left:50%;transform:translateX(-50%);background:var(--purple);color:#fff;font-size:.65rem;font-weight:700;padding:.2rem .8rem;border-radius:20px;white-space:nowrap;text-transform:uppercase}
+.tier-price{font-family:var(--font-d);font-size:2.5rem;color:var(--gold);line-height:1}
+.tier-price.family-price{color:var(--purple-l);font-size:1.7rem}
+.tier-price sup{font-size:1.1rem;vertical-align:top;margin-top:.4rem}
+.tier-sub{font-size:.82rem;color:var(--muted);margin:.3rem 0 1.1rem;line-height:1.4}
+.prize-list{list-style:none;margin-bottom:1.1rem}
+.prize-list li{display:flex;justify-content:space-between;padding:.3rem 0;border-bottom:1px solid rgba(201,162,39,.08);font-size:.85rem}
+.prize-list li:last-child{border:none}
+.pl{color:var(--muted)}.pv{color:var(--gold);font-weight:600}
+.pv.family-pv{color:var(--purple-l)}
+.slots-info{font-size:.76rem;color:var(--muted);text-align:center;margin-bottom:.4rem}
+.slot-bar{background:rgba(255,255,255,.08);height:5px;border-radius:3px;overflow:hidden;margin-bottom:1.1rem}
+.slot-fill{height:100%;background:var(--gold);border-radius:3px}
+.slot-fill.family-fill{background:var(--purple)}
+.btn-join{width:100%;padding:.7rem;background:var(--red);color:#fff;border:none;border-radius:4px;font-family:var(--font-b);font-weight:600;cursor:pointer;transition:.2s;font-size:.88rem}
+.btn-join:hover{background:var(--red-d)}
+.btn-join.family-join{background:var(--purple)}
+.btn-join.family-join:hover{background:#5B2C6F}
+.family-entry-note{font-size:.74rem;color:var(--purple-l);text-align:center;margin-bottom:.75rem;line-height:1.4;font-style:italic}
+
+/* CATS */
+.cats-sec{padding:1.5rem 1.5rem 2.5rem;max-width:1000px;margin:0 auto}
+.cats-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:.75rem;margin-top:1.2rem}
+.cat-chip{background:var(--card);border:1px solid rgba(201,162,39,.18);border-radius:6px;padding:.6rem .8rem;font-size:.8rem;color:var(--muted);text-align:center}
+.cat-chip strong{display:block;color:var(--cream);font-size:.85rem}
+
+/* AUTH */
+.auth-wrap{min-height:calc(100vh - 64px);display:flex;align-items:center;justify-content:center;padding:2rem;background:radial-gradient(ellipse at center,#280808 0%,var(--off) 70%)}
+.auth-box{background:var(--card);border:1px solid rgba(201,162,39,.35);border-radius:12px;padding:2.25rem;width:100%;max-width:420px}
+.auth-t{font-family:var(--font-d);font-size:1.75rem;color:var(--gold);text-align:center;margin-bottom:.25rem}
+.auth-s{text-align:center;font-size:.83rem;color:var(--muted);margin-bottom:1.75rem;line-height:1.5}
+.fg{margin-bottom:1rem}
+.fl{display:block;font-size:.75rem;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:.35rem}
+.fi{width:100%;background:var(--dark);border:1px solid rgba(201,162,39,.25);border-radius:5px;padding:.6rem .9rem;color:var(--cream);font-family:var(--font-b);font-size:.9rem;outline:none;transition:.2s}
+.fi:focus{border-color:var(--gold)}
+.fi-2{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+.err{background:rgba(176,58,46,.2);border:1px solid var(--red);color:var(--red-l);border-radius:5px;padding:.6rem .9rem;font-size:.82rem;margin-bottom:.9rem}
+.demo-note{background:var(--dark);border:1px solid rgba(201,162,39,.2);border-radius:6px;padding:.9rem;margin-bottom:1.25rem;font-size:.78rem;color:var(--muted);line-height:1.6;text-align:center}
+.demo-note strong{color:var(--gold)}
+
+/* LOBBY */
+.lobby-wrap{padding:1.75rem 1.5rem;max-width:900px;margin:0 auto}
+.lobby-top{display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;flex-wrap:wrap;margin-bottom:1.5rem}
+.lobby-title{font-family:var(--font-d);font-size:1.6rem;color:var(--gold)}
+.lobby-sub{font-size:.8rem;color:var(--muted);margin-top:.2rem}
+.lobby-timer-box{background:var(--card);border:1px solid var(--gold);border-radius:8px;padding:.9rem 1.5rem;text-align:center;min-width:120px}
+.lt-lbl{font-size:.65rem;text-transform:uppercase;letter-spacing:1px;color:var(--muted)}
+.lt-val{font-family:var(--font-d);font-size:1.8rem;color:var(--gold);line-height:1.1}
+.slot-notice{background:rgba(201,162,39,.08);border:1px solid rgba(201,162,39,.2);border-radius:6px;padding:.75rem 1rem;font-size:.8rem;color:var(--muted);margin-bottom:1.2rem;line-height:1.6}
+.slot-notice strong{color:var(--gold)}
+.players-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:.6rem;margin-bottom:1.5rem}
+.p-slot{background:var(--card);border:1px solid rgba(201,162,39,.15);border-radius:7px;padding:.8rem .5rem;text-align:center;min-height:80px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.3rem}
+.p-slot.filled{border-color:rgba(201,162,39,.4)}
+.p-slot.empty{border-style:dashed;opacity:.35}
+.p-slot.me{border-color:var(--gold);border-width:2px}
+.pav{width:32px;height:32px;border-radius:50%;background:var(--red);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.72rem}
+.pname{font-size:.7rem;color:var(--cream)}
+.prank{font-size:.62rem;color:var(--gold);font-weight:600}
+.empty-txt{font-size:.65rem;color:rgba(253,246,227,.25)}
+.lobby-note{font-size:.75rem;color:var(--muted);text-align:center;margin-top:.5rem}
+
+/* QUIZ */
+.quiz-wrap{max-width:680px;margin:0 auto;padding:1.75rem 1.5rem}
+.quiz-hdr{display:flex;align-items:center;gap:.75rem;margin-bottom:1.5rem}
+.qcnt{font-size:.8rem;color:var(--muted);min-width:55px}
+.prog{flex:1;height:5px;background:rgba(255,255,255,.08);border-radius:3px;overflow:hidden}
+.prog-fill{height:100%;background:var(--gold);border-radius:3px;transition:width .4s}
+.qtimer{background:var(--red);color:#fff;font-family:var(--font-d);font-size:1.35rem;padding:.25rem .75rem;border-radius:6px;min-width:48px;text-align:center}
+.qtimer.urgent{animation:pulse 1s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.65}}
+.cat-tag{display:inline-block;background:rgba(201,162,39,.15);border:1px solid rgba(201,162,39,.3);color:var(--gold);font-size:.72rem;padding:.2rem .6rem;border-radius:20px;margin-bottom:.75rem}
+.q-card{background:var(--card);border:1px solid rgba(201,162,39,.25);border-radius:10px;padding:2rem 1.75rem;margin-bottom:1.25rem}
+.q-num{font-size:.72rem;text-transform:uppercase;letter-spacing:1px;color:var(--gold);margin-bottom:.6rem}
+.q-txt{font-family:var(--font-d);font-size:1.3rem;line-height:1.55;color:var(--cream)}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:.65rem}
+.opt{background:var(--card);border:1.5px solid rgba(201,162,39,.2);border-radius:7px;padding:.9rem 1rem;color:var(--cream);font-family:var(--font-b);font-size:.88rem;cursor:pointer;text-align:left;transition:.2s;line-height:1.4}
+.opt:hover:not(:disabled){border-color:var(--gold);background:rgba(201,162,39,.07)}
+.opt.correct{border-color:#27AE60;background:rgba(39,174,96,.13);color:#58D68D}
+.opt.wrong{border-color:var(--red);background:rgba(176,58,46,.13);color:var(--red-l)}
+.opt.reveal{border-color:#27AE60;background:rgba(39,174,96,.08);color:#58D68D}
+.score-bar{text-align:center;font-size:.82rem;color:var(--muted);margin-top:.5rem}
+.score-bar span{color:var(--gold);font-weight:600}
+.bonus-flag{display:inline-block;background:rgba(201,162,39,.2);color:var(--gold);font-size:.7rem;padding:.1rem .5rem;border-radius:10px;margin-left:.4rem}
+.live-board{background:var(--card);border:1px solid rgba(201,162,39,.15);border-radius:8px;padding:.75rem 1rem;margin-top:1rem;font-size:.8rem}
+.live-board h4{color:var(--gold);margin-bottom:.5rem;font-size:.82rem;text-transform:uppercase;letter-spacing:.5px}
+.live-row{display:flex;justify-content:space-between;padding:.2rem 0;color:var(--muted)}
+.live-row.me{color:var(--gold);font-weight:600}
+
+/* COMMERCIAL BREAK */
+.commercial-screen{display:none;background:#000;color:#000;min-height:100vh;align-items:center;justify-content:center;flex-direction:column;text-align:center;position:relative;overflow:hidden}
+.commercial-screen.on{display:flex}
+/* Video layer — fills full screen */
+.comm-video{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;z-index:1}
+/* Placeholder layer — white card shown after video */
+.comm-placeholder{position:relative;z-index:2;display:none;flex-direction:column;align-items:center;justify-content:center;background:#fff;width:100%;height:100vh;padding:2rem}
+.comm-placeholder.on{display:flex}
+.commercial-text{font-family:var(--font-d);font-weight:900;font-size:clamp(2rem,8vw,4rem);color:var(--gold-d);-webkit-text-stroke:2px var(--blk);letter-spacing:2px;margin-bottom:2rem}
+.commercial-sub{font-family:var(--font-b);font-size:.85rem;color:#444;text-transform:uppercase;letter-spacing:2px;margin-bottom:2.5rem}
+.commercial-clock{font-family:var(--font-d);font-size:4rem;color:var(--blk);border:4px solid var(--gold-d);border-radius:50%;width:120px;height:120px;display:flex;align-items:center;justify-content:center}
+/* Countdown overlay on top of video (bottom-right corner) */
+.comm-video-countdown{position:absolute;bottom:1.5rem;right:1.5rem;z-index:3;font-family:var(--font-d);font-size:1.5rem;color:rgba(255,255,255,.8);background:rgba(0,0,0,.45);border-radius:50%;width:52px;height:52px;display:flex;align-items:center;justify-content:center;border:2px solid rgba(255,255,255,.4)}
+
+/* RESULTS */
+.results-wrap{padding:1.75rem 1.5rem;max-width:720px;margin:0 auto;text-align:center}
+.trophy{font-family:var(--font-d);font-size:2rem;color:var(--gold);margin-bottom:.5rem}
+.res-title{font-family:var(--font-d);font-size:2.2rem;color:var(--gold);margin-bottom:.3rem}
+.res-sub{color:var(--muted);font-size:.95rem;margin-bottom:2rem}
+.podium{display:flex;align-items:flex-end;justify-content:center;gap:.75rem;margin-bottom:2rem}
+.pod{background:var(--card);border:1px solid rgba(201,162,39,.25);border-radius:8px 8px 0 0;padding:1rem .75rem;text-align:center;width:130px}
+.pod.p1{height:170px;border-color:var(--gold);border-width:2px}
+.pod.p2{height:135px}
+.pod.p3{height:108px}
+.pod-rank{font-family:var(--font-d);font-size:1.5rem;color:var(--gold)}
+.pod-name{font-size:.8rem;margin:.25rem 0;color:var(--cream)}
+.pod-prize{color:var(--gold);font-weight:600;font-size:.85rem}
+.claim-box{background:var(--card);border:2px solid var(--gold);border-radius:10px;padding:1.5rem;margin:1.5rem 0;text-align:left}
+.claim-box h3{font-family:var(--font-d);color:var(--gold);margin-bottom:.75rem}
+.claim-steps{list-style:none;counter-reset:cs}
+.claim-steps li{counter-increment:cs;padding:.5rem 0 .5rem 2.2rem;position:relative;font-size:.88rem;color:var(--muted);border-bottom:1px solid rgba(201,162,39,.07);line-height:1.55}
+.claim-steps li:last-child{border:none}
+.claim-steps li::before{content:counter(cs);position:absolute;left:0;width:1.6rem;height:1.6rem;background:var(--gold);color:var(--blk);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;top:.55rem}
+.claim-steps strong{color:var(--cream)}
+.lb-table{width:100%;border-collapse:collapse;margin-bottom:1.5rem;text-align:left}
+.lb-table th{background:var(--red-d);color:var(--gold);padding:.6rem .9rem;font-size:.75rem;text-transform:uppercase;letter-spacing:.5px}
+.lb-table td{padding:.6rem .9rem;border-bottom:1px solid rgba(201,162,39,.08);font-size:.85rem}
+.rk{color:var(--gold);font-family:var(--font-d);font-weight:700}
+
+/* PROFILE */
+.prof-wrap{padding:1.75rem 1.5rem;max-width:720px;margin:0 auto}
+.prof-hero{background:var(--card);border:1px solid rgba(201,162,39,.25);border-radius:10px;padding:1.75rem;display:flex;align-items:center;gap:1.25rem;flex-wrap:wrap;margin-bottom:1.25rem}
+.prof-av{width:72px;height:72px;border-radius:50%;background:var(--red);border:3px solid var(--gold);display:flex;align-items:center;justify-content:center;font-family:var(--font-d);font-size:1.8rem;flex-shrink:0}
+.prof-name{font-family:var(--font-d);font-size:1.5rem;color:var(--gold)}
+.prof-sub{font-size:.75rem;color:var(--muted);margin-top:.15rem}
+.badges{display:flex;gap:.4rem;flex-wrap:wrap;margin-top:.4rem}
+.badge{background:rgba(201,162,39,.1);border:1px solid rgba(201,162,39,.3);color:var(--gold);font-size:.68rem;padding:.15rem .6rem;border-radius:20px}
+.stat-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:.9rem;margin-bottom:1.25rem}
+.scard{background:var(--card);border:1px solid rgba(201,162,39,.15);border-radius:8px;padding:1rem}
+.scard .n{font-family:var(--font-d);font-size:1.75rem;color:var(--gold)}
+.scard .l{font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-top:.2rem}
+.hist-table{width:100%;border-collapse:collapse}
+.hist-table th{background:rgba(176,58,46,.35);color:var(--gold);padding:.6rem .9rem;text-align:left;font-size:.72rem;text-transform:uppercase;letter-spacing:.5px}
+.hist-table td{padding:.6rem .9rem;border-bottom:1px solid rgba(201,162,39,.07);font-size:.83rem}
+.win-pill{background:rgba(30,132,73,.2);color:var(--green-l);border-radius:4px;padding:.1rem .5rem;font-size:.72rem;font-weight:600}
+.loss-pill{background:rgba(176,58,46,.2);color:var(--red-l);border-radius:4px;padding:.1rem .5rem;font-size:.72rem;font-weight:600}
+
+/* FAQ */
+.faq-sec{padding:2rem 1.5rem;max-width:800px;margin:0 auto}
+.faq-item{background:var(--card);border:1px solid rgba(201,162,39,.15);border-radius:8px;padding:1rem 1.25rem;margin-bottom:.65rem;cursor:pointer}
+.faq-q{color:var(--cream);font-size:.9rem;display:flex;justify-content:space-between;align-items:center;gap:1rem;line-height:1.4}
+.faq-q::after{content:'\25BE';color:var(--gold);flex-shrink:0}
+.faq-a{display:none;font-size:.83rem;color:var(--muted);line-height:1.65;margin-top:.6rem;padding-top:.6rem;border-top:1px solid rgba(201,162,39,.1)}
+.faq-item.open .faq-a{display:block}
+.faq-item.open .faq-q::after{content:'\25B4'}
+
+.centered{text-align:center;margin:1rem 0}
+.family-entry-input{width:100%;background:var(--dark);border:1px solid rgba(108,52,131,.4);border-radius:5px;padding:.6rem .9rem;color:var(--cream);font-family:var(--font-b);font-size:.95rem;outline:none;margin-top:.5rem}
+.family-entry-input:focus{border-color:var(--purple-l)}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="brand" onclick="go('home')">
+    <div class="brand-top">One Nation News'</div>
+    <div class="brand-main">TBQ</div>
+    <div class="brand-bottom">The Black Quiz</div>
+  </div>
+  <div class="nav-mid">
+    <button class="nb on" id="nb-home" onclick="go('home')">Home</button>
+    <button class="nb" id="nb-lobby" onclick="go('lobby')">Contests</button>
+    <button class="nb" id="nb-profile" onclick="go('profile')">Profile</button>
+  </div>
+  <div class="nav-r">
+    <span class="wallet" id="walletEl" style="display:none">$0.00</span>
+    <div class="avatar" id="avatarEl" style="display:none">?</div>
+    <button class="nb" id="installBtn" style="display:none" onclick="installApp()">Install App</button>
+    <button class="nb" id="loginBtn" onclick="go('auth')">Create Demo Account</button>
+    <button class="nb" id="logoutBtn" style="display:none" onclick="doLogout()">Logout</button>
+  </div>
+</nav>
+
+<!-- HOME -->
+<div class="scr on" id="homeScr">
+  <div class="kente"></div>
+  <div class="hero">
+    <div class="hero-tagline-top">One Nation News presents</div>
+    <div class="hero-tbq">TBQ</div>
+    <div class="hero-tagline-bottom">The Black Quiz</div>
+    <h1>Know Your <span>History</span>. Win Real Prizes.</h1>
+    <p>Live pay-for-play Black History trivia. 20 players per contest compete in a fast 90-second round. Not filled? <strong style="color:var(--gold)">Zero charge, ever.</strong></p>
+    <div class="hero-btns">
+      <button class="btn-g" onclick="go('lobby')">Enter a Contest</button>
+      <button class="btn-o" onclick="go('auth')">Create Demo Account</button>
+    </div>
+  </div>
+  <div class="ticker-band">
+    <div class="ticker-text">NEWS: Congratulations! Blaine Perkins has won 11 contests in a row with winnings of $1,200! &mdash; Claudine Pugh remains the #1 ranked player for the second week in a row with a cumulative cash total of $8,668! &nbsp;&nbsp;&nbsp; UPDATES: TBQ paid out $95,225 on 6/13/26. &mdash; 3,200 players competed in TBQ on 6/13/26. &nbsp;&nbsp;&nbsp; OPEN SLOTS: 13 slots are open this hour. &nbsp;&nbsp;&nbsp; PREVIOUS DAY WINNINGS TOTAL: $86,000 &mdash; BIGGEST WIN: $200 &mdash; HOTTEST TIME SLOT: 4:06AM Diamond</div>
+  </div>
+
+  <div class="rules-band">
+    <h3>How It Works — Contest Rules</h3>
+    <ul>
+      <li>Each contest seats <strong>20 players</strong> — top <strong>3 of 20</strong> finishers win prizes</li>
+      <li>1st place wins <strong>40%</strong> of the pool, 2nd wins <strong>25%</strong>, 3rd wins <strong>18%</strong></li>
+      <li>Each contest lasts <strong>90 seconds</strong> — 12 questions, 4 choices each</li>
+      <li><strong>5 points</strong> per correct answer, 0 for incorrect</li>
+      <li>Fastest correct answer in the field earns a <strong>+1 point speed bonus</strong></li>
+      <li>An 18-second commercial break airs between Questions 6 and 7</li>
+      <li>Contest starts only when all 20 seats are filled</li>
+      <li>If fewer than 90% of seats fill, contest cancels — full refund issued</li>
+      <li>Cancel up to 1 hour before start for a full in-app refund</li>
+      <li>Questions drawn randomly across Black History categories</li>
+      <li>Winners must verify identity before prize funds are released</li>
+      <li>All players must be confirmed in advance — admin approval required</li>
+    </ul>
+  </div>
+
+  <div class="schedule-band">
+    <strong>Daily Schedule:</strong> The game day begins at <strong>12:00 AM (0000 / midnight)</strong> and contests run in <strong>90-second increments</strong> around the clock — 960 total contest slots per day, each seating 20 players (19,200 players/day max).<br>
+    <strong>Reservations:</strong> Reservations may be made from <strong>1 hour up to 72 hours</strong> in advance. <strong>Immediate seating is also available</strong> for any open slot — no advance reservation required if a seat is open now.
+  </div>
+
+  <div class="tiers-sec">
+    <div class="sec-h">Choose Your Tier</div>
+    <div class="sec-s">Entry fee × 20 players = prize pool. Top 3 of 20 win: 1st gets 40%, 2nd gets 25%, 3rd gets 18%.<br>No seats filled = no charge.</div>
+    <div class="tiers-grid" id="tiersGrid"></div>
+  </div>
+
+  <div class="cats-sec">
+    <div class="sec-h" style="font-size:1.4rem">14 Question Categories</div>
+    <div class="cats-grid" id="catsGrid"></div>
+  </div>
+
+  <div class="faq-sec">
+    <div class="sec-h" style="font-size:1.4rem;margin-bottom:1rem">Frequently Asked Questions</div>
+    <div id="faqList"></div>
+  </div>
+</div>
+
+<!-- AUTH -->
+<div class="scr" id="authScr">
+  <div class="auth-wrap">
+    <div class="auth-box">
+      <div class="auth-t">Create Demo Account</div>
+      <div class="auth-s">This is a demo. No real payment is collected — your mock account lets you try the contest experience.</div>
+      <div id="authErr" class="err" style="display:none"></div>
+      <div class="demo-note"><strong>Demo Mode:</strong> Enter any name and email. You'll start with a $150 demo wallet balance and a +1 point speed bonus on every correct answer.</div>
+      <div class="fi-2">
+        <div class="fg"><label class="fl">First Name</label><input class="fi" id="rFirst" placeholder="First"/></div>
+        <div class="fg"><label class="fl">Last Name</label><input class="fi" id="rLast" placeholder="Last"/></div>
+      </div>
+      <div class="fg"><label class="fl">Email Address</label><input class="fi" type="email" id="rEmail" placeholder="you@example.com"/></div>
+      <button class="btn-g" style="width:100%;margin-top:.3rem" onclick="doRegister()">Create Demo Account &amp; Continue</button>
+    </div>
+  </div>
+</div>
+
+<!-- LOBBY -->
+<div class="scr" id="lobbyScr">
+  <div class="lobby-wrap">
+    <div class="lobby-top">
+      <div>
+        <div class="lobby-title" id="lobbyTitle">Gold Tier Lobby</div>
+        <div class="lobby-sub" id="lobbySub">$10 entry · 20 seats · 90-second contest · Top 3 win prizes</div>
+      </div>
+      <div class="lobby-timer-box">
+        <div class="lt-lbl">Contest fills in</div>
+        <div class="lt-val" id="lobbyCD">--:--</div>
+      </div>
+    </div>
+    <div class="slot-notice"><strong>Reservation Rules:</strong> All players must be confirmed in advance. Reservations may be made from <strong>1 hour up to 72 hours</strong> before a contest's start time, or you may take an <strong>immediate seat</strong> in any open slot right now. The game day begins at midnight (0000) and contests run in 90-second increments around the clock (960 slots/day). If fewer than 90% of seats fill, the contest cancels and all entry fees are fully refunded.</div>
+    <div class="players-grid" id="playersGrid"></div>
+    <div class="centered">
+      <button class="btn-g" onclick="startQuiz()">Start Contest (Demo)</button>
+      <div class="lobby-note">In production, the contest auto-starts when all 20 seats are filled and confirmed.</div>
+    </div>
+  </div>
+</div>
+
+<!-- QUIZ -->
+<div class="scr" id="quizScr">
+  <div class="quiz-wrap">
+    <div class="quiz-hdr">
+      <span class="qcnt" id="qCnt">Q 1 / 12</span>
+      <div class="prog"><div class="prog-fill" id="progFill" style="width:8%"></div></div>
+      <div class="qtimer" id="qTimer">6</div>
+    </div>
+    <div class="cat-tag" id="catTag">Category</div>
+    <div class="q-card">
+      <div class="q-num" id="qNum">Question 1</div>
+      <div class="q-txt" id="qTxt">Loading...</div>
+    </div>
+    <div class="opts" id="optsGrid"></div>
+    <div class="score-bar" id="scoreBar">Score: <span>0</span> pts</div>
+    <div class="live-board"><h4>Live Standings</h4><div id="liveBoard"></div></div>
+  </div>
+</div>
+
+<!-- COMMERCIAL BREAK -->
+<div class="commercial-screen" id="commercialScr">
+  <!-- Layer 1: TBQ video ad (plays first, 12s) -->
+  <video class="comm-video" id="commVideo" playsinline muted preload="auto" poster="">
+    <source src="./media/tbq_commercial.webm" type="video/webm"/>
+    <source src="./media/tbq_commercial.mp4" type="video/mp4"/>
+  </video>
+  <!-- Video countdown overlay (bottom-right) -->
+  <div class="comm-video-countdown" id="commVideoCountdown">12</div>
+  <!-- Layer 2: "Your Commercial Here!" placeholder (shown after video, 6s) -->
+  <div class="comm-placeholder" id="commPlaceholder">
+    <div class="commercial-text">Your Commercial Here!</div>
+    <div class="commercial-sub">One Nation News' TBQ &mdash; Sponsor Break</div>
+    <div class="commercial-clock" id="commercialClock">6</div>
+  </div>
+</div>
+
+<!-- RESULTS -->
+<div class="scr" id="resultsScr">
+  <div class="results-wrap">
+    <div class="trophy" id="trophyEl">Results</div>
+    <div class="res-title" id="resTitle">Contest Complete!</div>
+    <div class="res-sub" id="resSub">Check your rank below</div>
+    <div class="podium" id="podiumEl"></div>
+    <div class="claim-box" id="claimBox" style="display:none">
+      <h3>You Won! Here's How to Claim</h3>
+      <ol class="claim-steps">
+        <li><strong>Verify your identity</strong> — Upload a government-issued ID through your Profile page under "Claim Winnings".</li>
+        <li><strong>Admin review</strong> — Our team verifies your submission within 24 hours and confirms eligibility.</li>
+        <li><strong>Select payout method</strong> — Choose Venmo, direct deposit, or other authorized methods shown in your wallet.</li>
+        <li><strong>Receive your prize</strong> — Funds released after verification. Platform fee deducted per your tier agreement.</li>
+        <li><strong>Mark as resolved</strong> — Once received, confirm in-app to close the payout ticket.</li>
+      </ol>
+      <button class="btn-g" style="margin-top:1rem" onclick="openClaimModal()">Submit Verification Now</button>
+    </div>
+    <div style="font-family:var(--font-d);font-size:1.1rem;color:var(--gold);text-align:left;margin-bottom:.75rem">Full Leaderboard (Top 3 of 20 Win)</div>
+    <table class="lb-table">
+      <thead><tr><th>Rank</th><th>Player</th><th>Score</th><th>Time</th><th>Prize</th></tr></thead>
+      <tbody id="lbBody"></tbody>
+    </table>
+    <button class="btn-g" onclick="go('lobby')">Play Again</button>
+    &nbsp;
+    <button class="btn-o" onclick="go('home')">Home</button>
+  </div>
+</div>
+
+<!-- PROFILE -->
+<div class="scr" id="profileScr">
+  <div class="prof-wrap">
+    <div class="prof-hero">
+      <div class="prof-av" id="profAv">JD</div>
+      <div style="flex:1">
+        <div class="prof-name" id="profName">Player Name</div>
+        <div class="prof-sub" id="profSub">Demo account</div>
+        <div class="badges" id="profBadges"></div>
+      </div>
+      <div style="text-align:right">
+        <div style="font-family:var(--font-d);font-size:1.8rem;color:var(--gold)" id="profEarn">$0</div>
+        <div style="font-size:.72rem;color:var(--muted)">Total Earnings</div>
+        <button class="btn-r" style="margin-top:.5rem;font-size:.75rem;padding:.4rem 1rem" onclick="openClaimModal()">Claim Winnings</button>
+      </div>
+    </div>
+    <div class="stat-cards">
+      <div class="scard"><div class="n" id="stGames">0</div><div class="l">Games Played</div></div>
+      <div class="scard"><div class="n" id="stTop3">0</div><div class="l">Top 3 Finishes</div></div>
+      <div class="scard"><div class="n" id="stAcc">0%</div><div class="l">Accuracy</div></div>
+      <div class="scard"><div class="n" id="stBonus">0</div><div class="l">Speed Bonuses</div></div>
+    </div>
+    <div style="font-family:var(--font-d);font-size:1.1rem;color:var(--gold);margin-bottom:.75rem">Game History</div>
+    <table class="hist-table">
+      <thead><tr><th>Date</th><th>Tier</th><th>Score</th><th>Rank</th><th>Prize</th><th>Status</th></tr></thead>
+      <tbody id="histBody"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- PAYMENT MODAL -->
+<div id="payModal" style="position:fixed;inset:0;background:rgba(0,0,0,.78);display:none;align-items:center;justify-content:center;z-index:500;padding:1rem">
+  <div style="background:var(--card);border:1px solid rgba(201,162,39,.4);border-radius:12px;padding:2rem;width:100%;max-width:460px;position:relative;max-height:90vh;overflow-y:auto">
+    <button onclick="closeModal('payModal')" style="position:absolute;top:.75rem;right:.75rem;background:none;border:none;color:var(--muted);font-size:1.2rem;cursor:pointer">&times;</button>
+    <h2 style="font-family:var(--font-d);color:var(--gold);margin-bottom:1rem;font-size:1.4rem">Join Contest</h2>
+    <div id="familyEntryRow" style="display:none;margin-bottom:1rem">
+      <label class="fl" style="color:var(--purple-l)">Black Family Tier — Choose Your Entry ($1 – $1,000)</label>
+      <input class="family-entry-input" type="number" id="familyEntryAmt" min="1" max="1000" value="100" oninput="updateFamilyModal()"/>
+      <div style="font-size:.75rem;color:var(--muted);margin-top:.35rem">Prize pool scales with your chosen amount × 20 players.</div>
+    </div>
+    <div style="display:flex;justify-content:space-between;padding:.45rem 0;border-bottom:1px solid rgba(201,162,39,.08);font-size:.88rem"><span>Entry Fee</span><strong id="pmFee" style="color:var(--gold)">$10.00</strong></div>
+    <div style="display:flex;justify-content:space-between;padding:.45rem 0;border-bottom:1px solid rgba(201,162,39,.08);font-size:.88rem"><span>Contest Tier</span><strong id="pmTier" style="color:var(--gold)">Gold Tier</strong></div>
+    <div style="display:flex;justify-content:space-between;padding:.45rem 0;border-bottom:1px solid rgba(201,162,39,.08);font-size:.88rem"><span>Open Seats (of 20)</span><strong id="pmSlots" style="color:var(--gold)">2</strong></div>
+    <div style="display:flex;justify-content:space-between;padding:.45rem 0;border-bottom:1px solid rgba(201,162,39,.08);font-size:.88rem"><span>Prize Pool</span><strong id="pmPool" style="color:var(--gold)">$200</strong></div>
+    <div style="display:flex;justify-content:space-between;padding:.45rem 0;border-bottom:1px solid rgba(201,162,39,.08);font-size:.88rem"><span>1st Place</span><strong id="pm1st" style="color:var(--gold)">$80</strong></div>
+    <div style="display:flex;justify-content:space-between;padding:.45rem 0;border-bottom:1px solid rgba(201,162,39,.08);font-size:.88rem"><span>2nd Place</span><strong id="pm2nd" style="color:var(--gold)">$50</strong></div>
+    <div style="display:flex;justify-content:space-between;padding:.45rem 0;border-bottom:1px solid rgba(201,162,39,.08);font-size:.88rem"><span>3rd Place</span><strong id="pm3rd" style="color:var(--gold)">$36</strong></div>
+    <div style="display:flex;justify-content:space-between;padding:.45rem 0;font-size:.88rem"><span>Your Demo Wallet</span><strong id="pmWallet" style="color:var(--gold)">$150.00</strong></div>
+    <div class="slot-notice" style="font-size:.78rem;margin-top:.75rem"><strong>Reminder:</strong> Reservations may be made 1–72 hours in advance, or take an immediate seat if one is open now. If fewer than 90% of seats fill, your entry fee is fully refunded.</div>
+    <button class="btn-g" style="width:100%;margin-top:.75rem" onclick="confirmJoin()">Confirm &amp; Reserve Seat (Demo)</button>
+  </div>
+</div>
+
+<!-- CLAIM MODAL -->
+<div id="claimModal" style="position:fixed;inset:0;background:rgba(0,0,0,.78);display:none;align-items:center;justify-content:center;z-index:500;padding:1rem">
+  <div style="background:var(--card);border:2px solid var(--gold);border-radius:12px;padding:2rem;width:100%;max-width:480px;position:relative;max-height:90vh;overflow-y:auto">
+    <button onclick="closeModal('claimModal')" style="position:absolute;top:.75rem;right:.75rem;background:none;border:none;color:var(--muted);font-size:1.2rem;cursor:pointer">&times;</button>
+    <h2 style="font-family:var(--font-d);color:var(--gold);margin-bottom:1rem">Claim Your Winnings</h2>
+    <div style="font-size:.83rem;color:var(--muted);line-height:1.6;margin-bottom:.75rem">To receive your prize, complete identity verification. Admin will review and release funds within 24 hours.</div>
+    <div class="fg"><label class="fl">Full Legal Name</label><input class="fi" placeholder="As shown on ID"/></div>
+    <div style="border:2px dashed rgba(201,162,39,.3);border-radius:8px;padding:2rem;text-align:center;color:var(--muted);font-size:.85rem;margin:1rem 0;cursor:pointer" onclick="alert('File upload connects to your backend API')">Upload Government-Issued ID<br><span style="font-size:.75rem">(Photo, image, or document link accepted)</span></div>
+    <div class="fg"><label class="fl">Preferred Payout Method</label><select class="fi"><option>Venmo</option><option>Direct Deposit</option><option>Other Authorized Method</option></select></div>
+    <div class="fg"><label class="fl">Payout Account / Handle</label><input class="fi" placeholder="e.g. @yourvenmo"/></div>
+    <button class="btn-g" style="width:100%;margin-top:.5rem" onclick="submitClaim()">Submit Claim for Review</button>
+  </div>
+</div>
+
+<!-- INSTALL APP MODAL (iOS / fallback instructions) -->
+<div id="installModal" style="position:fixed;inset:0;background:rgba(0,0,0,.78);display:none;align-items:center;justify-content:center;z-index:500;padding:1rem">
+  <div style="background:var(--card);border:1px solid rgba(201,162,39,.4);border-radius:12px;padding:2rem;width:100%;max-width:420px;position:relative">
+    <button onclick="closeModal('installModal')" style="position:absolute;top:.75rem;right:.75rem;background:none;border:none;color:var(--muted);font-size:1.2rem;cursor:pointer">&times;</button>
+    <h2 style="font-family:var(--font-d);color:var(--gold);margin-bottom:1rem;font-size:1.4rem">Install One Nation News' TBQ</h2>
+    <div id="installInstructions" style="font-size:.88rem;color:var(--muted);line-height:1.8"></div>
+  </div>
+</div>
+
+<script>
+const TIERS=[
+  {name:'Bronze Tier',fee:5,slots:14,family:false},
+  {name:'Gold Tier',fee:10,slots:18,hot:true,family:false},
+  {name:'$25 Diamond Tier',fee:25,slots:7,family:false},
+  {name:'Black Family Tier',fee:100,slots:6,family:true,minFee:1,maxFee:1000}
+];
+function prizePool(t,customFee){const f=customFee||t.fee;return f*20;}
+function prizes(pool){return{p1:Math.round(pool*0.40*100)/100,p2:Math.round(pool*0.25*100)/100,p3:Math.round(pool*0.18*100)/100};}
+
+const CATS=['Historical Dates','Notable People','Firsts','Philosophy','The Diaspora','Geography','Events','Arts & Entertainment','Literature','Politics & Law','Modern Black America','Science & Invention','Young, Gifted &amp; Black &lt; 25','Attacks &amp; Swindles'];
+
+const FAQS=[
+  {q:'How many players compete and how many win?',a:'Each contest seats 20 players. The top 3 of 20 finishers win prizes: 1st place earns 40 percent of the prize pool, 2nd place earns 25 percent, and 3rd place earns 18 percent.'},
+  {q:'How long does a contest last?',a:'Each contest runs for 90 seconds total, covering 12 questions with 4 answer choices each. An 18-second commercial break airs between Questions 6 and 7.'},
+  {q:'How is scoring calculated?',a:'You earn 5 points for each correct answer and 0 points for an incorrect answer. The fastest correct response across the whole field on a given question earns an additional +1 point speed bonus. In this demo, your demo account receives a +1 point bonus on every correct answer.'},
+  {q:'When does the game day start and how do I reserve a seat?',a:'The game day begins at 12:00 AM (midnight) and contests run in 90-second increments around the clock, totaling 960 contest slots per day, each seating 20 players (19,200 players per day). Reservations may be made as early as 72 hours in advance and as late as 1 hour before a contest starts. Immediate seating is also available for any open slot right now, with no advance reservation required.'},
+  {q:'What happens if a contest does not fill all 20 seats?',a:'If fewer than 90 percent of seats (18 of 20) are filled by start time, the contest is cancelled and all entry fees are immediately refunded to in-app wallets. No money is ever charged for an unfilled contest.'},
+  {q:'What is the Black Family Tier?',a:'The Black Family Tier is a premium, fully customizable contest where players choose their own entry fee from $1 up to $1,000. The prize pool scales accordingly (entry times 20), and the same 40/25/18 percent prize split applies. This tier is ideal for groups, special events, or high-stakes play.'},
+  {q:'How do I collect my prize money?',a:'Winners receive an in-app notification. You must submit a government-issued ID for verification through your Profile page. Once admin approves, funds are released via your selected payout method within 24 hours.'},
+  {q:'Can I cancel my seat after registering?',a:'Yes. You may cancel your reserved seat up to 1 hour before the contest start time for a full in-app refund. Cancellations within 1 hour of start are non-refundable.'},
+  {q:'Do I need an account before playing?',a:'Yes. All players must be confirmed in advance and approved before participating. This demo lets you create a mock account instantly to try the experience, with no real payment involved.'}
+];
+
+const QA_RAW=[
+  {t:"Who was the first black American president?",o:["Barack Obama","Bill Clinton","Abraham Lincoln","Theodore Roosevelt"],cat:"Notable People"},
+  {t:"Which inventor is responsible for creating the Super Soaker?",o:["Lonnie Johnson","Robert Johnson","Chris Martin","William Blatty"],cat:"Science & Invention"},
+  {t:"According to the Guinness Book of Records, who is the first female self-made millionaire in America?",o:["Madam C.J. Walker","Oprah Winfrey","Harriet Tubman","Mahalia Jackson"],cat:"Firsts"},
+  {t:"What scientific field is Dr. Neil deGrasse Tyson involved in?",o:["Astrophysics","Artificial Intelligence","Immunology","Robotics"],cat:"Science & Invention"},
+  {t:"Who is known as the Godfather of Funk?",o:["George Clinton","Rick James","Roy Ayers","Muddy Waters"],cat:"Arts & Entertainment"},
+  {t:"Which nation, outside of Africa, has the largest black population?",o:["Brazil","United States","Haiti","Colombia"],cat:"The Diaspora"},
+  {t:"Who wrote the novel The Bluest Eye?",o:["Toni Morrison","Maya Angelou","Nikki Giovanni","Octavia Butler"],cat:"Literature"},
+  {t:"Who founded the A.M.E. Church?",o:["Richard Allen","Reverend Ike","Martin Luther","Harriet Tubman"],cat:"Historical Dates"},
+  {t:"According to this 90s club chant, what is on fire?",o:["The Roof","The Club","The Song","The Band"],cat:"Arts & Entertainment"},
+  {t:"Who was the first black woman to serve as CEO of a Fortune 500 company?",o:["Ursula Burns","Ann Fudge","Oprah Winfrey","Sheila Johnson"],cat:"Firsts"},
+  {t:"Who refused to give up her seat on a bus before Rosa Parks?",o:["Claudette Colvin","Beah Richards","Phyllis Wheatley","Shirley Bass"],cat:"Historical Dates"},
+  {t:"What is Doechii's given name?",o:["Jaylah Ji'mya Hickman","Cree Summers","Donna Summer","Ariana Hayes"],cat:"Modern Black America"},
+  {t:"Where did Dr. Martin Luther King, Jr. deliver his famous 'I Have a Dream' speech?",o:["Washington, DC","Memphis, TN","Atlanta, GA","New York, NY"],cat:"Historical Dates"},
+  {t:"Who was the first African American and Native American woman to hold a pilot license?",o:["Bessie Coleman","Mary McLeod Bethune","Barbara Smith","Shirley Caesar"],cat:"Firsts"},
+  {t:"Which of the following is Maya Angelou's first body of work?",o:["I Know Why the Caged Bird Sings","The Heart of a Woman","A Song Flung Up to Heaven","Otherness"],cat:"Literature"},
+  {t:"What is the name of Michelle Obama's debut memoir?",o:["Becoming","Dreams From My Father","Just As I Am","Up the Down Staircase"],cat:"Modern Black America"},
+  {t:"Madam C.J. Walker is known as the first black and female self-made millionaire. What product led to her success?",o:["Hair grower","The ironing board","Curling iron","Caller ID"],cat:"Firsts"},
+  {t:"What state was Barack Obama senator of before his presidency?",o:["Illinois","Hawaii","Massachusetts","Michigan"],cat:"Politics & Law"},
+  {t:"Soul Train was created and hosted by which TV presenter?",o:["Don Cornelius","Montel Williams","Arsenio Hall","Dick Clark"],cat:"Arts & Entertainment"},
+  {t:"Who was the first African American model to be featured on the cover of GQ magazine?",o:["Tyra Banks","Naomi Campbell","Iman","Beverly Johnson"],cat:"Firsts"},
+  {t:"Virgil Abloh was best known for being the artistic director of which brand?",o:["Louis Vuitton","Dior","Chanel","Cross Colours"],cat:"Modern Black America"},
+  {t:"Who is the first black woman to serve as a US Supreme Court justice?",o:["Ketanji Brown","Shirley Chisholm","Carol Moseley Braun","Ann Fudge"],cat:"Firsts"},
+  {t:"At what age did Serena Williams win her first U.S. Open?",o:["17","20","22","24"],cat:"Young, Gifted & Black < 25"},
+  {t:"How many times did Kobe Bryant win the NBA Championship?",o:["5","3","2","6"],cat:"Modern Black America"},
+  {t:"What was Muhammad Ali's nickname?",o:["The Greatest","The Fridge","The Mouth","Butterfly"],cat:"Notable People"},
+  {t:"Jesse Owens is considered one of the greatest athletes of his time in which sport?",o:["Track and Field","Fencing","Gymnastics","Boxing"],cat:"Notable People"},
+  {t:"LeBron James has played for the Cleveland Cavaliers, L.A. Lakers and _______.",o:["Miami Heat","Chicago Bulls","Houston Rockets","Minnesota Timberwolves"],cat:"Modern Black America"},
+  {t:"Simone Biles is the most decorated sportsperson in which sport?",o:["Gymnastics","Ice skating","Luge","Swimming"],cat:"Young, Gifted & Black < 25"},
+  {t:"What is Tiger Woods' given name?",o:["Eldrick","Clarence","Malachi","Wilfred"],cat:"Notable People"},
+  {t:"With which team did Shaquille O'Neal finish his basketball career?",o:["Boston Celtics","Cleveland Cavaliers","Phoenix Suns","Miami Heat"],cat:"Notable People"},
+  {t:"How many people in America identify as black, not black and another race?",o:["47 million","13 million","25 million","32 million"],cat:"The Diaspora"},
+  {t:"Which city's metro area has the most black people?",o:["New York City","Chicago","Los Angeles","Washington, DC"],cat:"The Diaspora"},
+  {t:"In 2023, what percentage of the black population was under 20 years of age?",o:["30 percent","12 percent","50 percent","5 percent"],cat:"Young, Gifted & Black < 25"},
+  {t:"Which philosopher wrote the book \"The Wretched of the Earth\"?",o:["Frantz Fanon","C.L.R. James","Alain LeRoy Locke","W.E.B. DuBois"],cat:"Philosophy"},
+
+  /* ── 100 NEW QUESTIONS ── */
+  /* Historical Dates */
+  {t:"On what date did the Emancipation Proclamation officially take effect?",o:["January 1, 1863","December 6, 1865","July 4, 1863","April 9, 1865"],cat:"Historical Dates"},
+  {t:"On what date did the U.S. Supreme Court issue its decision in Brown v. Board of Education?",o:["May 17, 1954","July 2, 1964","August 28, 1963","September 15, 1963"],cat:"Historical Dates"},
+  {t:"On what date was the bombing of the MOVE compound in Philadelphia?",o:["May 13, 1985","May 15, 1984","April 13, 1985","June 1, 1985"],cat:"Historical Dates"},
+  {t:"On what date was the 16th Street Baptist Church bombing in Birmingham, Alabama?",o:["September 15, 1963","August 28, 1963","July 2, 1964","September 25, 1963"],cat:"Historical Dates"},
+  {t:"On what date did Rosa Parks refuse to give up her seat on a Montgomery city bus?",o:["December 1, 1955","January 1, 1956","November 30, 1955","February 21, 1956"],cat:"Historical Dates"},
+  {t:"On what date did Juneteenth commemorate the arrival of Union troops in Galveston, Texas, announcing freedom for enslaved people?",o:["June 19, 1865","January 1, 1863","April 9, 1865","December 6, 1865"],cat:"Historical Dates"},
+  {t:"On what date was the Civil Rights Act signed into law?",o:["July 2, 1964","August 6, 1965","May 17, 1954","August 28, 1963"],cat:"Historical Dates"},
+  {t:"On what date was the Voting Rights Act signed into law?",o:["August 6, 1965","July 2, 1964","March 7, 1965","April 4, 1968"],cat:"Historical Dates"},
+  {t:"On what date did the Greensboro sit-ins begin with four Black college students challenging segregated lunch counters?",o:["February 1, 1960","January 15, 1960","March 7, 1960","February 21, 1960"],cat:"Historical Dates"},
+  {t:"On what date was Dr. Martin Luther King Jr. assassinated?",o:["April 4, 1968","April 5, 1968","March 28, 1968","June 6, 1968"],cat:"Historical Dates"},
+  {t:"On what date was the 1963 March on Washington for Jobs and Freedom held?",o:["August 28, 1963","July 2, 1964","September 15, 1963","March 7, 1965"],cat:"Historical Dates"},
+
+  /* Notable People */
+  {t:"Who founded the National Council of Negro Women?",o:["Mary McLeod Bethune","Rosa Parks","Dorothy Height","Ella Baker"],cat:"Notable People"},
+  {t:"Who founded the Tuskegee Institute?",o:["Booker T. Washington","W.E.B. Du Bois","Frederick Douglass","Charles Hamilton Houston"],cat:"Notable People"},
+  {t:"Who organized the Brotherhood of Sleeping Car Porters?",o:["A. Philip Randolph","Bayard Rustin","Medgar Evers","Roy Wilkins"],cat:"Notable People"},
+  {t:"Who founded Black History Week, which later became Black History Month?",o:["Carter G. Woodson","W.E.B. Du Bois","Booker T. Washington","John Hope Franklin"],cat:"Notable People"},
+  {t:"Who served as president of the National Council of Negro Women for four decades?",o:["Dorothy Height","Shirley Chisholm","Septima Clark","Coretta Scott King"],cat:"Notable People"},
+  {t:"Who co-founded the Black Lives Matter movement in 2013?",o:["Alicia Garza","Angela Davis","Tarana Burke","Stacey Abrams"],cat:"Notable People"},
+  {t:"Who was the principal organizer of the 1963 March on Washington?",o:["Bayard Rustin","John Lewis","Andrew Young","Jesse Jackson"],cat:"Notable People"},
+  {t:"Who was known as the 'Mother of the Civil Rights Movement' for refusing to surrender her bus seat?",o:["Rosa Parks","Septima Clark","Diane Nash","Daisy Bates"],cat:"Notable People"},
+
+  /* Firsts */
+  {t:"Who became the first Black woman elected to the U.S. Congress?",o:["Shirley Chisholm","Barbara Jordan","Maxine Waters","Carol Moseley Braun"],cat:"Firsts"},
+  {t:"Who became the first Black justice appointed to the U.S. Supreme Court?",o:["Thurgood Marshall","Clarence Thomas","Constance Baker Motley","Charles Hamilton Houston"],cat:"Firsts"},
+  {t:"Who became the first Black woman to serve as a state supreme court justice in the United States?",o:["Jane Bolin","Constance Baker Motley","Pauli Murray","Amalya Kearse"],cat:"Firsts"},
+  {t:"Who was the first Black governor elected in the United States during Reconstruction?",o:["P.B.S. Pinchback","Douglas Wilder","Deval Patrick","Andrew Young"],cat:"Firsts"},
+  {t:"Who became the first Black heavyweight boxing champion of the world?",o:["Jack Johnson","Joe Louis","Muhammad Ali","George Foreman"],cat:"Firsts"},
+  {t:"Who became the first Black female millionaire in the United States?",o:["Madam C.J. Walker","Annie Turnbo Malone","Maggie Lena Walker","Sarah Rector"],cat:"Firsts"},
+  {t:"Who became the first Black woman to win the Nobel Prize in Literature?",o:["Toni Morrison","Maya Angelou","Alice Walker","Gwendolyn Brooks"],cat:"Firsts"},
+  {t:"Who became the first Black person to earn a Ph.D. from Harvard University?",o:["W.E.B. Du Bois","Alain Locke","Carter G. Woodson","Booker T. Washington"],cat:"Firsts"},
+
+  /* Philosophy */
+  {t:"Which principle is most closely associated with Kwanzaa?",o:["Nguzo Saba (The Seven Principles)","The Four Freedoms","Manifest Destiny","The Monroe Doctrine"],cat:"Philosophy"},
+  {t:"Who is known as the father of Pan-Africanism?",o:["W.E.B. Du Bois","Malcolm X","Martin Luther King Jr.","Bayard Rustin"],cat:"Philosophy"},
+  {t:"Who is most closely associated with the philosophy of Black Nationalism during the 20th century?",o:["Marcus Garvey","Booker T. Washington","Frederick Douglass","Bayard Rustin"],cat:"Philosophy"},
+  {t:"Which educator believed education was the pathway to racial uplift and founded Bethune-Cookman College?",o:["Mary McLeod Bethune","Septima Clark","Anna Julia Cooper","Fannie Lou Hamer"],cat:"Philosophy"},
+  {t:"Which concept promoted by Marcus Garvey emphasized economic independence and pride among people of African descent?",o:["Black self-determination","Manifest Destiny","The Open Door Policy","The Great Society"],cat:"Philosophy"},
+  {t:"Which educator and activist believed that education should prepare African Americans for full citizenship and leadership?",o:["Anna Julia Cooper","Mary Church Terrell","Daisy Bates","Dorothy Height"],cat:"Philosophy"},
+  {t:"Which African philosophy emphasizes humanity, compassion, and interconnectedness through the phrase 'I am because we are'?",o:["Ubuntu","Ujamaa","Harambee","Sankofa"],cat:"Philosophy"},
+
+  /* The Diaspora */
+  {t:"From which Caribbean nation did journalist and activist Claudia Jones originate?",o:["Trinidad and Tobago","Jamaica","Barbados","Haiti"],cat:"The Diaspora"},
+  {t:"Which Caribbean-born activist founded the Universal Negro Improvement Association (UNIA)?",o:["Marcus Garvey","Stokely Carmichael","Frantz Fanon","C.L.R. James"],cat:"The Diaspora"},
+  {t:"Which nation has the largest population of people of African descent outside of Africa?",o:["Brazil","Jamaica","Cuba","Canada"],cat:"The Diaspora"},
+  {t:"Which country became the first independent Black republic in 1804?",o:["Haiti","Jamaica","Barbados","Cuba"],cat:"The Diaspora"},
+
+  /* Geography */
+  {t:"Which city was known as 'Black Wall Street'?",o:["Tulsa, Oklahoma","Birmingham, Alabama","Atlanta, Georgia","Jackson, Mississippi"],cat:"Geography"},
+  {t:"Which African nation was never formally colonized by a European power?",o:["Ethiopia","Ghana","Nigeria","Kenya"],cat:"Geography"},
+  {t:"Which South Carolina sea islands are known for preserving Gullah Geechee culture?",o:["The Sea Islands","The Florida Keys","The Outer Banks","The Aleutian Islands"],cat:"Geography"},
+  {t:"Harriet Tubman led many enslaved people to freedom across which river into Canada?",o:["Niagara River","Mississippi River","Potomac River","Hudson River"],cat:"Geography"},
+  {t:"Which river did many enslaved people cross while escaping from Kentucky into free territory in Ohio?",o:["Ohio River","Missouri River","Tennessee River","Arkansas River"],cat:"Geography"},
+  {t:"In which state was Harriet Tubman born?",o:["Maryland","Virginia","Georgia","North Carolina"],cat:"Geography"},
+  {t:"Which historically Black university is located in Atlanta, Georgia, and is the alma mater of Dr. Martin Luther King Jr.?",o:["Morehouse College","Howard University","Tuskegee University","Florida A&M University"],cat:"Geography"},
+
+  /* Arts & Entertainment */
+  {t:"Who became the first Black woman to win the Academy Award for Best Actress?",o:["Halle Berry","Viola Davis","Whoopi Goldberg","Angela Bassett"],cat:"Arts & Entertainment"},
+  {t:"Which musician was known as the 'Godfather of Soul'?",o:["James Brown","Ray Charles","Marvin Gaye","Stevie Wonder"],cat:"Arts & Entertainment"},
+  {t:"Who was the first Black woman inducted into the Rock & Roll Hall of Fame as a solo artist?",o:["Aretha Franklin","Diana Ross","Tina Turner","Whitney Houston"],cat:"Arts & Entertainment"},
+  {t:"Which Harlem Renaissance poet wrote 'The Negro Speaks of Rivers'?",o:["Langston Hughes","Claude McKay","Countee Cullen","James Weldon Johnson"],cat:"Arts & Entertainment"},
+  {t:"Who was known as the 'Queen of Gospel'?",o:["Mahalia Jackson","Aretha Franklin","Patti LaBelle","Whitney Houston"],cat:"Arts & Entertainment"},
+  {t:"Which artist is known as the 'King of Pop'?",o:["Michael Jackson","Prince","Lionel Richie","Smokey Robinson"],cat:"Arts & Entertainment"},
+  {t:"Who became the first Black woman to headline the Super Bowl halftime show as a solo performer?",o:["Rihanna","Beyoncé","Diana Ross","Janet Jackson"],cat:"Arts & Entertainment"},
+  {t:"Which jazz musician was nicknamed 'Satchmo'?",o:["Louis Armstrong","Duke Ellington","Charlie Parker","Dizzy Gillespie"],cat:"Arts & Entertainment"},
+
+  /* Events */
+  {t:"What was the purpose of the March on Washington in 1963?",o:["Jobs and Freedom","Women's Suffrage","Ending World War II","Voting for the Constitution"],cat:"Events"},
+  {t:"Which event launched the Montgomery Bus Boycott?",o:["Rosa Parks' arrest","The March on Washington","The Selma marches","The Greensboro sit-ins"],cat:"Events"},
+  {t:"Which event became known as 'Bloody Sunday'?",o:["The Selma-to-Montgomery voting rights march","The Freedom Rides","The Montgomery Bus Boycott","The Birmingham Campaign"],cat:"Events"},
+  {t:"Which event marked the first successful interstate challenge to segregated bus travel in 1961?",o:["The Freedom Rides","The Montgomery Bus Boycott","The Birmingham Campaign","The Selma March"],cat:"Events"},
+
+  /* Attacks & Swindles */
+  {t:"What was the date of the destruction of Tulsa's Greenwood District ('Black Wall Street')?",o:["June 1, 1921","May 31, 1920","June 19, 1921","July 4, 1921"],cat:"Attacks & Swindles"},
+  {t:"What do the attacks on the MOVE compound and Black Wall Street have in common?",o:["They involved aerial bombings against U.S. civilians on U.S. soil.","Both occurred during World War II.","Both were carried out by the U.S. Army.","Both happened in the same city."],cat:"Attacks & Swindles"},
+  {t:"Which prosperous Florida community was destroyed in a racially motivated attack in 1923?",o:["Rosewood","Eatonville","Mound Bayou","Nicodemus"],cat:"Attacks & Swindles"},
+  {t:"Which investigative journalist exposed the horrific realities of lynching through her writings?",o:["Ida B. Wells","Mary Church Terrell","Daisy Bates","Charlotta Bass"],cat:"Attacks & Swindles"},
+  {t:"Which U.S. government program secretly observed the progression of untreated syphilis in Black men without informed consent?",o:["The Tuskegee Syphilis Study","Operation CHAOS","MKUltra","COINTELPRO"],cat:"Attacks & Swindles"},
+  {t:"Which journalist documented anti-lynching campaigns after friends of hers were murdered in Memphis?",o:["Ida B. Wells","Mary McLeod Bethune","Dorothy Height","Fannie Lou Hamer"],cat:"Attacks & Swindles"},
+  {t:"Which FBI program targeted Black civil rights organizations and leaders through surveillance and disruption?",o:["COINTELPRO","Operation Desert Storm","MKUltra","Operation Paperclip"],cat:"Attacks & Swindles"},
+  {t:"Which Black Panther Party leader survived a controversial 1970 courtroom shootout and later became a college professor?",o:["Angela Davis","Elaine Brown","Kathleen Cleaver","Assata Shakur"],cat:"Attacks & Swindles"},
+
+  /* Literature */
+  {t:"Who wrote Their Eyes Were Watching God?",o:["Zora Neale Hurston","Toni Morrison","Alice Walker","Maya Angelou"],cat:"Literature"},
+  {t:"Who wrote The Souls of Black Folk?",o:["W.E.B. Du Bois","James Baldwin","Langston Hughes","Richard Wright"],cat:"Literature"},
+  {t:"Who wrote Beloved?",o:["Toni Morrison","Maya Angelou","Alice Walker","Lorraine Hansberry"],cat:"Literature"},
+  {t:"Who wrote Narrative of the Life of Frederick Douglass?",o:["Frederick Douglass","Booker T. Washington","W.E.B. Du Bois","Richard Wright"],cat:"Literature"},
+  {t:"Who wrote The Color Purple?",o:["Alice Walker","Toni Morrison","Maya Angelou","Gloria Naylor"],cat:"Literature"},
+  {t:"Who wrote Roots: The Saga of an American Family?",o:["Alex Haley","James Baldwin","Ralph Ellison","Richard Wright"],cat:"Literature"},
+  {t:"Who wrote I Know Why the Caged Bird Sings?",o:["Maya Angelou","Toni Morrison","Nikki Giovanni","Sonia Sanchez"],cat:"Literature"},
+  {t:"Who wrote Invisible Man?",o:["Ralph Ellison","James Baldwin","Richard Wright","Alex Haley"],cat:"Literature"},
+
+  /* Politics & Law */
+  {t:"Who became the first Black woman elected to the U.S. Senate?",o:["Carol Moseley Braun","Kamala Harris","Barbara Jordan","Shirley Chisholm"],cat:"Politics & Law"},
+  {t:"Who argued the successful case of Brown v. Board of Education before the U.S. Supreme Court?",o:["Thurgood Marshall","Charles Hamilton Houston","Constance Baker Motley","Clarence Thomas"],cat:"Politics & Law"},
+  {t:"Who became the first Black woman to argue before the U.S. Supreme Court?",o:["Constance Baker Motley","Pauli Murray","Jane Bolin","Barbara Jordan"],cat:"Politics & Law"},
+  {t:"Who became the first Black woman elected Attorney General of a U.S. state (California)?",o:["Kamala Harris","Letitia James","Marilyn Mosby","Barbara Lee"],cat:"Politics & Law"},
+  {t:"Which congressman and civil rights leader was severely beaten during the Selma march and later became known as the 'conscience of Congress'?",o:["John Lewis","Elijah Cummings","Andrew Young","James Clyburn"],cat:"Politics & Law"},
+  {t:"Who became the first Black woman to serve as Vice President of the United States?",o:["Kamala Harris","Shirley Chisholm","Carol Moseley Braun","Barbara Jordan"],cat:"Politics & Law"},
+  {t:"Who became the first Black President of the United States?",o:["Barack Obama","Colin Powell","Jesse Jackson","Andrew Young"],cat:"Politics & Law"},
+  {t:"Who became the first Black woman to serve on the U.S. Supreme Court?",o:["Ketanji Brown Jackson","Sonia Sotomayor","Kamala Harris","Constance Baker Motley"],cat:"Politics & Law"},
+
+  /* Modern Black America */
+  {t:"Who became the first member of Generation Z elected to the U.S. Congress?",o:["Maxwell Frost","Jonathan Bynoe","Isaiah Martin","Jamaal Bowman"],cat:"Modern Black America"},
+  {t:"Who founded the #MeToo movement in 2006?",o:["Tarana Burke","Alicia Garza","Opal Tometi","Patrisse Cullors"],cat:"Modern Black America"},
+  {t:"Which entrepreneur founded The Honey Pot Company?",o:["Beatrice Dixon","Lisa Price","Richelieu Dennis","Janice Bryant Howroyd"],cat:"Modern Black America"},
+  {t:"Which city hosts the National Museum of African American History and Culture?",o:["Washington, D.C.","Atlanta, Georgia","Chicago, Illinois","Philadelphia, Pennsylvania"],cat:"Modern Black America"},
+
+  /* Science & Invention */
+  {t:"The immortal HeLa cells are named after whom?",o:["Henrietta Lacks","Helen Lachey","Herschel Laney","Henry LaRoche"],cat:"Science & Invention"},
+  {t:"Who invented the Super Soaker water gun?",o:["Lonnie Johnson","George Washington Carver","Granville T. Woods","Elijah McCoy"],cat:"Science & Invention"},
+  {t:"Which inventor received more than 50 patents and developed improvements for electric railway systems?",o:["Granville T. Woods","Garrett Morgan","Lewis Latimer","Benjamin Banneker"],cat:"Science & Invention"},
+  {t:"Which NASA mathematician's orbital calculations helped make John Glenn's flight possible?",o:["Katherine Johnson","Dorothy Vaughan","Mary Jackson","Christine Darden"],cat:"Science & Invention"},
+  {t:"Which inventor patented an improved traffic signal and an early gas mask?",o:["Garrett Morgan","Elijah McCoy","Lewis Latimer","Granville T. Woods"],cat:"Science & Invention"},
+  {t:"Which engineer became NASA's first Black female engineer?",o:["Mary Jackson","Katherine Johnson","Dorothy Vaughan","Annie Easley"],cat:"Science & Invention"},
+  {t:"Which inventor improved the incandescent light bulb by developing a longer-lasting carbon filament?",o:["Lewis Latimer","Garrett Morgan","Granville T. Woods","Elijah McCoy"],cat:"Science & Invention"},
+  {t:"Which NASA mathematician became the first Black supervisor at NASA's Langley Research Center?",o:["Dorothy Vaughan","Katherine Johnson","Mary Jackson","Annie Easley"],cat:"Science & Invention"},
+
+  /* Young, Gifted & Black < 25 */
+  {t:"Which teenage poet became the youngest inaugural poet in U.S. history in 2021?",o:["Amanda Gorman","Marley Dias","Naomi Wadler","Mikaila Ulmer"],cat:"Young, Gifted & Black < 25"},
+  {t:"At age 15, who became one of the youngest students ever admitted to Harvard University?",o:["Brandon Moss","George Poindexter","Steven Banneker","Elijah McCoy"],cat:"Young, Gifted & Black < 25"},
+  {t:"Which young entrepreneur founded Me & the Bees Lemonade as a child?",o:["Mikaila Ulmer","Marley Dias","Naomi Wadler","Marsai Martin"],cat:"Young, Gifted & Black < 25"},
+  {t:"Which young inventor created a device to help prevent hot-car deaths after winning a national science competition as a teenager?",o:["Alaina Gassler","Gitanjali Rao","Kelvin Doe","Easton LaChappelle"],cat:"Young, Gifted & Black < 25"},
+  {t:"Which young literacy advocate founded the #1000BlackGirlBooks campaign?",o:["Marley Dias","Mikaila Ulmer","Naomi Wadler","Marsai Martin"],cat:"Young, Gifted & Black < 25"},
+  {t:"Which actress became the youngest executive producer in Hollywood with the film Little at age 14?",o:["Marsai Martin","Storm Reid","Yara Shahidi","Skai Jackson"],cat:"Young, Gifted & Black < 25"},
+  {t:"Who became the first Black woman to receive the Academy Award for Best Costume Design?",o:["Ruth E. Carter","Deborah L. Scott","Sharen Davis","Sandy Powell"],cat:"Young, Gifted & Black < 25"}
+];
+function shuffleQuestions(){
+  // Shuffle the full question pool, then take 12 for this contest
+  const pool=QA_RAW.slice();
+  for(let i=pool.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));const tmp=pool[i];pool[i]=pool[j];pool[j]=tmp;}
+  const selected=pool.slice(0,12);
+  return selected.map(function(q){
+    const correctText=q.o[0];
+    const opts=q.o.slice();
+    for(let i=opts.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));const tmp=opts[i];opts[i]=opts[j];opts[j]=tmp;}
+    const c=opts.indexOf(correctText);
+    return{t:q.t,o:opts,c:c,cat:q.cat};
+  });
+}
+
+const MOCK_PLAYERS=[
+  {name:'Marcus J.',rank:23},
+  {name:'Aisha K.',rank:0},
+  {name:'Devon P.',rank:194},
+  {name:'Zora M.',rank:2},
+  {name:'James B.',rank:0},
+  {name:'Keisha T.',rank:47},
+  {name:'Elijah W.',rank:0},
+  {name:'Naomi S.',rank:88},
+  {name:'Troy H.',rank:0},
+  {name:'Fatima O.',rank:156},
+  {name:'Andre L.',rank:0},
+  {name:'Brianna C.',rank:312},
+  {name:'Isaiah M.',rank:0},
+  {name:'Destiny R.',rank:5},
+  {name:'Kwame A.',rank:0},
+  {name:'Tanya F.',rank:76},
+  {name:'RJ Thomas',rank:0},
+  {name:'Monique D.',rank:211},
+  {name:'Carlos E.',rank:0},
+  {name:'You',rank:0}
+];
+
+let state={user:null,wallet:150,questions:[],userHistory:[],cQ:0,score:0,answered:false,timerI:null,timeLeft:6,lobbyI:null,selectedTier:TIERS[1],familyFee:100,myRank:0,myPrize:0,correctCount:0,bonusCount:0};
+
+function fmtMoney(n){return '$'+Number(n).toLocaleString('en-US',{minimumFractionDigits:0,maximumFractionDigits:2});}
+
+function init(){renderTiers();renderCats();renderFaqs();}
+
+function renderTiers(){
+  document.getElementById('tiersGrid').innerHTML=TIERS.map(function(t,i){
+    const pool=prizePool(t), p=prizes(pool), pct=Math.round(t.slots/20*100);
+    if(t.family){
+      return '<div class="tier-card family" onclick="openPayModal('+i+')">'
+        +'<div class="family-tag">Black Family Tier</div>'
+        +'<div class="tier-price family-price"><sup>$</sup>1 &ndash; <sup>$</sup>1,000</div>'
+        +'<div class="tier-sub">Player&#39;s choice entry &middot; pool scales with your amount<br>Top 3 of 20 win prizes &middot; all players pre-confirmed</div>'
+        +'<ul class="prize-list">'
+        +'<li><span class="pl">1st Place</span><span class="pv family-pv">40% of pool</span></li>'
+        +'<li><span class="pl">2nd Place</span><span class="pv family-pv">25% of pool</span></li>'
+        +'<li><span class="pl">3rd Place</span><span class="pv family-pv">18% of pool</span></li>'
+        +'</ul>'
+        +'<div class="family-entry-note">Example at $100/player: Pool $2,000<br>1st: $800 &middot; 2nd: $500 &middot; 3rd: $360</div>'
+        +'<div class="slots-info">'+t.slots+' / 20 seats filled</div>'
+        +'<div class="slot-bar"><div class="slot-fill family-fill" style="width:'+pct+'%"></div></div>'
+        +'<button class="btn-join family-join">Join Black Family Tier</button>'
+        +'</div>';
+    }
+    return '<div class="tier-card '+(t.hot?'hot':'')+'" onclick="openPayModal('+i+')">'
+      +(t.hot?'<div class="hot-tag">Most Popular</div>':'')
+      +'<div class="tier-price"><sup>$</sup>'+t.fee+'</div>'
+      +'<div class="tier-sub">'+t.name+' &middot; Pool: '+fmtMoney(pool)+'<br>Top 3 of 20 win prizes</div>'
+      +'<ul class="prize-list">'
+      +'<li><span class="pl">1st Place</span><span class="pv">'+fmtMoney(p.p1)+'</span></li>'
+      +'<li><span class="pl">2nd Place</span><span class="pv">'+fmtMoney(p.p2)+'</span></li>'
+      +'<li><span class="pl">3rd Place</span><span class="pv">'+fmtMoney(p.p3)+'</span></li>'
+      +'</ul>'
+      +'<div class="slots-info">'+t.slots+' / 20 seats filled</div>'
+      +'<div class="slot-bar"><div class="slot-fill" style="width:'+pct+'%"></div></div>'
+      +'<button class="btn-join">Join for $'+t.fee+'</button>'
+      +'</div>';
+  }).join('');
+}
+function renderCats(){document.getElementById('catsGrid').innerHTML=CATS.map(function(c){return '<div class="cat-chip"><strong>'+c+'</strong></div>';}).join('');}
+function renderFaqs(){document.getElementById('faqList').innerHTML=FAQS.map(function(f){return '<div class="faq-item" onclick="this.classList.toggle(&quot;open&quot;)"><div class="faq-q">'+f.q+'</div><div class="faq-a">'+f.a+'</div></div>';}).join('');}
+
+function go(name){
+  if(!state.user && (name==='lobby'||name==='profile')){go('auth');return;}
+  const scrs=document.querySelectorAll('.scr');
+  for(let i=0;i<scrs.length;i++){scrs[i].classList.remove('on');}
+  const nbs=document.querySelectorAll('.nb');
+  for(let i=0;i<nbs.length;i++){nbs[i].classList.remove('on');}
+  document.getElementById(name+'Scr').classList.add('on');
+  const nb=document.getElementById('nb-'+name);
+  if(nb){nb.classList.add('on');}
+  if(name==='lobby'){initLobby();}
+  if(name==='profile'){renderProfile();}
+}
+
+function showErr(m){const e=document.getElementById('authErr');e.textContent=m;e.style.display='block';}
+function doRegister(){
+  document.getElementById('authErr').style.display='none';
+  const first=document.getElementById('rFirst').value.trim();
+  const last=document.getElementById('rLast').value.trim();
+  const email=document.getElementById('rEmail').value.trim();
+  if(!first||!last||!email){showErr('Please fill in all fields to create your demo account.');return;}
+  const name=first+' '+last;
+  const initials=(first[0]+last[0]).toUpperCase();
+  state.user={name:name,initials:initials,email:email};
+  updateNav();go('home');
+}
+function doLogout(){state.user=null;updateNav();go('home');}
+function updateNav(){
+  const on=!!state.user;
+  document.getElementById('loginBtn').style.display=on?'none':'block';
+  document.getElementById('logoutBtn').style.display=on?'block':'none';
+  document.getElementById('avatarEl').style.display=on?'flex':'none';
+  document.getElementById('walletEl').style.display=on?'block':'none';
+  if(on){document.getElementById('avatarEl').textContent=state.user.initials;updateWallet();}
+}
+function updateWallet(){document.getElementById('walletEl').textContent=fmtMoney(state.wallet);}
+
+function openPayModal(idx){
+  if(!state.user){go('auth');return;}
+  const t=TIERS[idx];state.selectedTier=t;
+  const isFamily=t.family;
+  document.getElementById('familyEntryRow').style.display=isFamily?'block':'none';
+  const fee=isFamily?state.familyFee:t.fee;
+  updatePayModalDisplay(fee,t);
+  document.getElementById('payModal').style.display='flex';
+}
+function updatePayModalDisplay(fee,t){
+  const pool=fee*20,p=prizes(pool);
+  document.getElementById('pmFee').textContent=fmtMoney(fee)+(t.family?' (your choice)':'');
+  document.getElementById('pmTier').textContent=t.name;
+  document.getElementById('pmSlots').textContent=(20-t.slots);
+  document.getElementById('pmPool').textContent=fmtMoney(pool);
+  document.getElementById('pm1st').textContent=fmtMoney(p.p1);
+  document.getElementById('pm2nd').textContent=fmtMoney(p.p2);
+  document.getElementById('pm3rd').textContent=fmtMoney(p.p3);
+  document.getElementById('pmWallet').textContent=fmtMoney(state.wallet);
+}
+function updateFamilyModal(){
+  const raw=parseFloat(document.getElementById('familyEntryAmt').value)||1;
+  state.familyFee=Math.min(1000,Math.max(1,raw));
+  updatePayModalDisplay(state.familyFee,state.selectedTier);
+}
+function confirmJoin(){
+  const fee=state.selectedTier.family?state.familyFee:state.selectedTier.fee;
+  state.wallet-=fee;updateWallet();closeModal('payModal');
+  document.getElementById('lobbyTitle').textContent=state.selectedTier.name+' Lobby';
+  document.getElementById('lobbySub').textContent=fmtMoney(fee)+' entry, 20 seats, 90-second contest, top 3 win prizes';
+  go('lobby');
+}
+function closeModal(id){document.getElementById(id).style.display='none';}
+function openClaimModal(){document.getElementById('claimModal').style.display='flex';}
+function submitClaim(){closeModal('claimModal');alert('Claim submitted! Admin will review your ID and release funds within 24 hours.');}
+
+function initLobby(){
+  const g=document.getElementById('playersGrid'),filled=state.selectedTier.slots;
+  g.innerHTML=MOCK_PLAYERS.map(function(p,i){
+    const isMe=(p.name==='You'),isFilled=(i<filled||isMe);
+    const init=p.name.split(' ').map(function(w){return w[0];}).join('').slice(0,2);
+    return '<div class="p-slot '+(isFilled?'filled':'empty')+' '+(isMe?'me':'')+'">'
+      +(isFilled?'<div class="pav">'+init+'</div><div class="pname">'+p.name+'</div><div class="prank">Rank:'+p.rank+'</div>':'<div class="empty-txt">Open</div>')
+      +'</div>';
+  }).join('');
+  let t=600;clearInterval(state.lobbyI);
+  state.lobbyI=setInterval(function(){
+    t--;if(t<=0){clearInterval(state.lobbyI);return;}
+    const m=String(Math.floor(t/60)).padStart(2,'0'),s=String(t%60).padStart(2,'0');
+    document.getElementById('lobbyCD').textContent=m+':'+s;
+  },1000);
+}
+
+function startQuiz(){
+  clearInterval(state.lobbyI);
+  state.questions=shuffleQuestions();
+  state.cQ=0;state.score=0;state.answered=false;state.correctCount=0;state.bonusCount=0;
+  go('quiz');
+  startQ();
+}
+function startQ(){
+  clearInterval(state.timerI);
+  const q=state.questions[state.cQ];
+  document.getElementById('qCnt').textContent='Q '+(state.cQ+1)+' / '+state.questions.length;
+  document.getElementById('qNum').textContent='Question '+(state.cQ+1);
+  document.getElementById('qTxt').textContent=q.t;
+  document.getElementById('catTag').textContent=q.cat;
+  document.getElementById('progFill').style.width=Math.round((state.cQ+1)/state.questions.length*100)+'%';
+  document.getElementById('scoreBar').innerHTML='Score: <span>'+state.score+'</span> pts';
+  document.getElementById('optsGrid').innerHTML=q.o.map(function(o,i){return '<button class="opt" onclick="pickAns('+i+')">'+('ABCD'[i])+'. '+o+'</button>';}).join('');
+  updateLiveBoard();
+  state.answered=false;
+  state.timeLeft=6;
+  const te=document.getElementById('qTimer');te.classList.remove('urgent');te.textContent='6';
+  state.timerI=setInterval(function(){
+    state.timeLeft-=1;
+    const disp=Math.max(0,state.timeLeft);
+    te.textContent=disp;
+    if(disp<=2){te.classList.add('urgent');}
+    if(state.timeLeft<=0){clearInterval(state.timerI);if(!state.answered){autoAdv();}}
+  },1000);
+}
+function pickAns(idx){
+  if(state.answered){return;}
+  state.answered=true;clearInterval(state.timerI);
+  const q=state.questions[state.cQ];
+  const opts=document.querySelectorAll('.opt');
+  for(let i=0;i<opts.length;i++){
+    opts[i].disabled=true;
+    if(i===q.c){opts[i].classList.add('correct');}
+    else if(i===idx&&idx!==q.c){opts[i].classList.add('wrong');}
+  }
+  let earned=0,bonusTxt='';
+  if(idx===q.c){
+    earned=5;state.correctCount++;
+    earned+=1;state.bonusCount++;bonusTxt=' <span class="bonus-flag">+1 speed bonus</span>';
+  }
+  state.score+=earned;
+  document.getElementById('scoreBar').innerHTML='Score: <span>'+state.score+'</span> pts'+bonusTxt;
+  setTimeout(function(){ advQ(); },1500);
+}
+function autoAdv(){
+  state.answered=true;
+  const q=state.questions[state.cQ];
+  const opts=document.querySelectorAll('.opt');
+  for(let i=0;i<opts.length;i++){
+    opts[i].disabled=true;
+    if(i===q.c){opts[i].classList.add('reveal');}
+  }
+  setTimeout(function(){ advQ(); },1500);
+}
+function advQ(){
+  state.cQ++;
+  if(state.cQ===6){
+    showCommercial();
+    return;
+  }
+  if(state.cQ>=state.questions.length){showResults();return;}
+  startQ();
+}
+function showCommercial(){
+  // Show the commercial screen
+  document.getElementById('quizScr').classList.remove('on');
+  const commScr=document.getElementById('commercialScr');
+  commScr.classList.add('on');
+
+  // Reset state of both layers
+  const video=document.getElementById('commVideo');
+  const videoCountdown=document.getElementById('commVideoCountdown');
+  const placeholder=document.getElementById('commPlaceholder');
+  const clock=document.getElementById('commercialClock');
+
+  placeholder.classList.remove('on');
+  video.style.display='block';
+  videoCountdown.style.display='flex';
+  clock.textContent='6';
+
+  // ── PHASE 1: Play the 12-second TBQ video ──
+  let vt=12;
+  videoCountdown.textContent=vt;
+  video.currentTime=0;
+
+  // Try to play (autoplay may be blocked on some browsers without user gesture)
+  const playPromise=video.play();
+  if(playPromise!==undefined){
+    playPromise.catch(function(){
+      // Autoplay blocked — skip straight to placeholder
+      startPlaceholderPhase();
+    });
+  }
+
+  // Count down over the video
+  const vi=setInterval(function(){
+    vt--;
+    videoCountdown.textContent=Math.max(0,vt);
+    if(vt<=0){
+      clearInterval(vi);
+      video.pause();
+      startPlaceholderPhase();
+    }
+  },1000);
+
+  // ── PHASE 2: 6-second "Your Commercial Here!" placeholder ──
+  function startPlaceholderPhase(){
+    video.style.display='none';
+    videoCountdown.style.display='none';
+    placeholder.classList.add('on');
+    let pt=6;
+    clock.textContent=pt;
+    const pi=setInterval(function(){
+      pt--;
+      clock.textContent=Math.max(0,pt);
+      if(pt<=0){
+        clearInterval(pi);
+        // Done — back to quiz
+        commScr.classList.remove('on');
+        placeholder.classList.remove('on');
+        video.style.display='block';
+        videoCountdown.style.display='flex';
+        document.getElementById('quizScr').classList.add('on');
+        startQ();
+      }
+    },1000);
+  }
+}
+function updateLiveBoard(){
+  const lv=document.getElementById('liveBoard');
+  const fakes=[
+    {name:'Zora M.',score:state.score+Math.floor(Math.random()*30)+10},
+    {name:'Marcus J.',score:state.score+Math.floor(Math.random()*24)},
+    {name:'You',score:state.score},
+    {name:'Aisha K.',score:Math.max(0,state.score-Math.floor(Math.random()*24))},
+    {name:'Devon P.',score:Math.max(0,state.score-Math.floor(Math.random()*36))}
+  ].sort(function(a,b){return b.score-a.score;});
+  lv.innerHTML=fakes.map(function(p,i){return '<div class="live-row '+(p.name==='You'?'me':'')+'"><span>#'+(i+1)+' '+p.name+'</span><span>'+p.score+' pts</span></div>';}).join('');
+}
+
+function showResults(){
+  const t=state.selectedTier;
+  const fee=t.family?state.familyFee:t.fee;
+  const pool=fee*20;const p=prizes(pool);
+  const tierPrizes=[p.p1,p.p2,p.p3];
+  const maxPossible=state.questions.length*6;
+  const all=[
+    {name:'You',score:state.score,time:Math.floor(Math.random()*30)+90},
+    {name:'Zora M.',score:Math.floor(Math.random()*30)+Math.max(0,maxPossible-30),time:80},
+    {name:'Marcus J.',score:Math.floor(Math.random()*30)+Math.max(0,maxPossible-40),time:90},
+    {name:'Aisha K.',score:Math.floor(Math.random()*30)+Math.max(0,maxPossible-50),time:95},
+    {name:'Devon P.',score:Math.floor(Math.random()*30)+Math.max(0,maxPossible-60),time:100},
+    {name:'Keisha T.',score:Math.floor(Math.random()*30)+Math.max(0,maxPossible-65),time:105},
+    {name:'James B.',score:Math.floor(Math.random()*30)+Math.max(0,maxPossible-70),time:110},
+    {name:'Naomi S.',score:Math.floor(Math.random()*30)+Math.max(0,maxPossible-75),time:115}
+  ].sort(function(a,b){return b.score-a.score;});
+  state.myRank=0;
+  for(let i=0;i<all.length;i++){if(all[i].name==='You'){state.myRank=i+1;break;}}
+  state.myPrize=state.myRank<=3?tierPrizes[state.myRank-1]:0;
+  if(state.myPrize>0){state.wallet+=state.myPrize;}
+  updateWallet();
+  state.userHistory.unshift({date:'Today',tier:fmtMoney(fee),score:state.score+' pts',rank:'#'+state.myRank,prize:state.myPrize>0?fmtMoney(state.myPrize):'\u2014',status:state.myPrize>0?'Won':'\u2014',bonuses:state.bonusCount,correct:state.correctCount});
+  document.getElementById('trophyEl').textContent=state.myRank===1?'1st Place':state.myRank===2?'2nd Place':state.myRank===3?'3rd Place':'Final Rank #'+state.myRank;
+  document.getElementById('resTitle').textContent=state.myRank===1?'You Won 1st Place!':state.myRank===2?'2nd Place!':state.myRank===3?'3rd Place!':'Contest Complete!';
+  document.getElementById('resSub').textContent='Score: '+state.score+' pts ('+state.correctCount+'/12 correct, '+state.bonusCount+' speed bonuses) - Rank #'+state.myRank+' of 20'+(state.myPrize>0?' - Prize: '+fmtMoney(state.myPrize):'');
+  document.getElementById('claimBox').style.display=state.myPrize>0?'block':'none';
+  const top3=all.slice(0,3);
+  const ord=[top3[1],top3[0],top3[2]],cls=['p2','p1','p3'],rk=['2nd','1st','3rd'],prizeIdx=[1,0,2];
+  document.getElementById('podiumEl').innerHTML=ord.map(function(pl,i){
+    return '<div class="pod '+cls[i]+'"><div class="pod-rank">'+rk[i]+'</div><div class="pod-name">'+(pl?pl.name:'')+'</div><div class="pod-prize">'+(pl&&tierPrizes[prizeIdx[i]]?fmtMoney(tierPrizes[prizeIdx[i]]):'')+'</div></div>';
+  }).join('');
+  document.getElementById('lbBody').innerHTML=all.map(function(pl,i){
+    return '<tr><td class="rk">#'+(i+1)+'</td><td style="'+(pl.name==='You'?'color:var(--gold);font-weight:600':'')+'">'+pl.name+'</td><td>'+pl.score+'</td><td>'+Math.floor(pl.time/60)+':'+String(pl.time%60).padStart(2,'0')+'</td><td style="color:var(--gold)">'+(i<3?fmtMoney(tierPrizes[i]):'\u2014')+'</td></tr>';
+  }).join('');
+  go('results');
+}
+
+function renderProfile(){
+  if(!state.user){return;}
+  const u=state.user;
+  document.getElementById('profAv').textContent=u.initials;
+  document.getElementById('profName').textContent=u.name;
+  document.getElementById('profSub').textContent='Demo account - '+u.email;
+  let earn=0;
+  for(let i=0;i<state.userHistory.length;i++){
+    const h=state.userHistory[i];
+    if(h.prize!=='\u2014'){earn+=parseFloat(h.prize.replace(/[$,]/g,''));}
+  }
+  document.getElementById('profEarn').textContent=fmtMoney(earn);
+  document.getElementById('stGames').textContent=state.userHistory.length;
+  let top3ct=0;
+  for(let i=0;i<state.userHistory.length;i++){
+    const r=state.userHistory[i].rank;
+    if(r==='#1'||r==='#2'||r==='#3'){top3ct++;}
+  }
+  document.getElementById('stTop3').textContent=top3ct;
+  let totalCorrect=0,totalBonus=0;
+  for(let i=0;i<state.userHistory.length;i++){
+    totalCorrect+=(state.userHistory[i].correct||0);
+    totalBonus+=(state.userHistory[i].bonuses||0);
+  }
+  const totalQ=state.userHistory.length*12;
+  document.getElementById('stAcc').textContent=totalQ?Math.round(totalCorrect/totalQ*100)+'%':'0%';
+  document.getElementById('stBonus').textContent=totalBonus;
+  const b=document.getElementById('profBadges');b.innerHTML='';
+  if(state.userHistory.length>0){b.innerHTML+='<span class="badge">Active Competitor</span>';}
+  let hasFirst=false;
+  for(let i=0;i<state.userHistory.length;i++){if(state.userHistory[i].rank==='#1'){hasFirst=true;break;}}
+  if(hasFirst){b.innerHTML+='<span class="badge">1st Place Winner</span>';}
+  if(state.userHistory.length>=3){b.innerHTML+='<span class="badge">Dedicated Scholar</span>';}
+  document.getElementById('histBody').innerHTML=state.userHistory.length?state.userHistory.map(function(h){
+    return '<tr><td>'+h.date+'</td><td>'+h.tier+'</td><td>'+h.score+'</td><td>'+h.rank+'</td><td>'+(h.prize!=='\u2014'?'<span class="win-pill">'+h.prize+'</span>':'<span class="loss-pill">\u2014</span>')+'</td><td>'+(h.status==='Won'?'<span class="win-pill">Claim Available</span>':'<span style="color:var(--muted);font-size:.75rem">\u2014</span>')+'</td></tr>';
+  }).join(''):'<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:2rem;font-size:.85rem">No games played yet. Join a contest to get started.</td></tr>';
+}
+
+init();
+
+/* ===================== PWA: install + service worker ===================== */
+let deferredInstallPrompt = null;
+
+window.addEventListener('beforeinstallprompt', function(e){
+  e.preventDefault();
+  deferredInstallPrompt = e;
+  document.getElementById('installBtn').style.display = 'block';
+});
+
+window.addEventListener('appinstalled', function(){
+  deferredInstallPrompt = null;
+  document.getElementById('installBtn').style.display = 'none';
+});
+
+function isIOS(){
+  return /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+    (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+}
+function isInStandaloneMode(){
+  return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+}
+
+function installApp(){
+  if(deferredInstallPrompt){
+    deferredInstallPrompt.prompt();
+    deferredInstallPrompt.userChoice.then(function(){ deferredInstallPrompt = null; });
+    return;
+  }
+  showInstallInstructions();
+}
+
+function showInstallInstructions(){
+  const el = document.getElementById('installInstructions');
+  if(isIOS()){
+    el.innerHTML =
+      '<p style="margin-bottom:.75rem"><strong style="color:var(--gold)">On iPhone / iPad (Safari):</strong></p>'
+      + '<ol style="padding-left:1.2rem">'
+      + '<li>Tap the <strong>Share</strong> icon (square with an arrow) in the Safari toolbar.</li>'
+      + '<li>Scroll down and tap <strong>"Add to Home Screen."</strong></li>'
+      + '<li>Tap <strong>"Add"</strong> in the top-right corner.</li>'
+      + '</ol>'
+      + '<p style="margin-top:.75rem">The TBQ icon will appear on your Home Screen and opens like a native app.</p>';
+  } else {
+    el.innerHTML =
+      '<p style="margin-bottom:.75rem"><strong style="color:var(--gold)">On Android (Chrome):</strong></p>'
+      + '<ol style="padding-left:1.2rem">'
+      + '<li>Tap the <strong>&#8942;</strong> menu in the top-right corner.</li>'
+      + '<li>Tap <strong>"Install app"</strong> or <strong>"Add to Home screen."</strong></li>'
+      + '<li>Confirm by tapping <strong>"Install."</strong></li>'
+      + '</ol>'
+      + '<p style="margin-top:.75rem"><strong style="color:var(--gold)">On Desktop (Chrome/Edge):</strong></p>'
+      + '<p>Click the install icon in the address bar, or use the browser menu &rarr; "Install One Nation News\' TBQ."</p>';
+  }
+  document.getElementById('installModal').style.display = 'flex';
+}
+
+// Show the Install button for iOS users too (no beforeinstallprompt event there),
+// as long as the app isn't already running in standalone/installed mode.
+if(isIOS() && !isInStandaloneMode()){
+  document.getElementById('installBtn').style.display = 'block';
+}
+
+if('serviceWorker' in navigator){
+  window.addEventListener('load', function(){
+    navigator.serviceWorker.register('./service-worker.js').catch(function(err){
+      console.warn('Service worker registration failed:', err);
+    });
+  });
+}
+
+</script>
+</body>
+</html>
