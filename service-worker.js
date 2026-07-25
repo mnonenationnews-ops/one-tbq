@@ -1,5 +1,5 @@
-// One Nation News' TBQ — Service Worker v4
-const CACHE_NAME = 'onn-tbq-cache-v5';
+// One Nation News' TBQ — Service Worker v7
+const CACHE_NAME = 'onn-tbq-cache-v8';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
@@ -8,6 +8,7 @@ const ASSETS_TO_CACHE = [
   './icons/icon-512.png',
   './icons/icon-maskable-512.png',
   './icons/apple-touch-icon.png',
+  './media/i_am_history.jpg',
   './media/tbq_commercial.mp4',
   './media/tbq_commercial.webm'
 ];
@@ -23,9 +24,7 @@ self.addEventListener('install', (event) => {
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((keys) =>
-      Promise.all(
-        keys.filter((key) => key !== CACHE_NAME).map((key) => caches.delete(key))
-      )
+      Promise.all(keys.filter((k) => k !== CACHE_NAME).map((k) => caches.delete(k)))
     ).then(() => self.clients.claim())
   );
 });
@@ -33,17 +32,15 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
   event.respondWith(
-    caches.match(event.request).then((cachedResponse) => {
-      if (cachedResponse) return cachedResponse;
-      return fetch(event.request)
-        .then((networkResponse) => {
-          if (event.request.url.startsWith(self.location.origin)) {
-            const clone = networkResponse.clone();
-            caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
-          }
-          return networkResponse;
-        })
-        .catch(() => caches.match('./index.html'));
+    caches.match(event.request).then((cached) => {
+      if (cached) return cached;
+      return fetch(event.request).then((res) => {
+        if (event.request.url.startsWith(self.location.origin)) {
+          const clone = res.clone();
+          caches.open(CACHE_NAME).then((c) => c.put(event.request, clone));
+        }
+        return res;
+      }).catch(() => caches.match('./index.html'));
     })
   );
 });
